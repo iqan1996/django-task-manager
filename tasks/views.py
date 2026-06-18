@@ -11,7 +11,7 @@ class TaskListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        queryset = Task.objects.all().order_by('-id')
+        queryset = Task.objects.all().order_by('-created_at')
 
         search_query = self.request.query_params.get('search')
 
