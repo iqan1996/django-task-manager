@@ -1,5 +1,7 @@
 from django.db.models import Q
 from rest_framework import generics, permissions
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 from .models import Task
 from .serializers import TaskSerializer
@@ -33,3 +35,10 @@ class TaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Task.objects.all()
+    
+
+
+@login_required
+def task_list_view(request):
+    tasks = Task.objects.all().select_related("owner").order_by("-created_at")
+    return render(request,'tasks/task_list.html', {tasks : tasks,})
