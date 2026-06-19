@@ -41,4 +41,4 @@ class TaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 @login_required
 def task_list_view(request):
     tasks = Task.objects.all().select_related("owner").order_by("-created_at")
-    return render(request,'tasks/task_list.html', {tasks : tasks,})
+    return render(request,'tasks/task_list.html', {"tasks" : tasks,})
