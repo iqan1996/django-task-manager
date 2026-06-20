@@ -1,9 +1,10 @@
 from django.db.models import Q
 from rest_framework import generics, permissions
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Task
+from .forms import TaskForm
 from .serializers import TaskSerializer
 from .permissions import IsOwnerOrReadOnly
 
@@ -42,3 +43,24 @@ class TaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 def task_list_view(request):
     tasks = Task.objects.all().select_related("owner").order_by("-created_at")
     return render(request,'tasks/task_list.html', {"tasks" : tasks,})
+
+
+
+@login_required
+def task_create_view(request):
+    if request.method == "POST":
+        form = TaskForm(request.POST)
+
+
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.owner = request.user
+            task.save()
+            return redirect("tasks_web:task-list")
+        
+    else:
+        form = TaskForm()
+
+    return render(request, "tasks/task_form.html", {"form" : form})
+
+
