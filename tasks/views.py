@@ -1,6 +1,6 @@
 from django.db.models import Q
 from rest_framework import generics, permissions
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from .models import Task
@@ -81,3 +81,8 @@ def task_create_view(request):
     return render(request, "tasks/task_form.html", {"form" : form})
 
 
+@login_required
+def task_detail_view(request, pk):
+    task = get_object_or_404(Task.objects.select_related("owner"), pk=pk)
+
+    return render(request, "tasks/task_detail.html", {"task":task,})
