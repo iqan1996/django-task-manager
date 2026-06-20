@@ -2,6 +2,7 @@ from django.db.models import Q
 from rest_framework import generics, permissions
 from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 from .models import Task
 from .forms import TaskForm
@@ -86,3 +87,39 @@ def task_detail_view(request, pk):
     task = get_object_or_404(Task.objects.select_related("owner"), pk=pk)
 
     return render(request, "tasks/task_detail.html", {"task":task,})
+
+
+@login_required
+def task_update_view(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+
+    if task.owner != request.user:
+        raise PermissionDenied
+    
+    if request.method == "POST":
+        form = TaskForm(request.POST, instance=task)
+    
+        if form.is_valid():
+            form.save()
+            return redirect("tasks_web:task-detail", pk=task.pk)
+        
+    else:
+        form = TaskForm(instance=task)
+    
+    return render(request, "tasks/task_form.html", {"form":form})
+
+
+@login_required
+def task_delete_view(request,pk):
+    task = get_object_or_404(Task, pk=pk)
+
+    if task.owner!=request.user:
+        raise PermissionDenied
+    
+    if request.method == "POST":
+        task.delete()
+        return redirect("tasks_web:task-list")
+
+    return render(request, "tasks/task_confirm_delete.html", {
+        "task": task,
+    })

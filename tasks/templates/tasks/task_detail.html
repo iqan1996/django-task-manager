@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Task Detail</title>
+</head>
+<body>
+    <h1>{{ task.title }}</h1>
+
+    <p><strong>Status:</strong> {{ task.status }}</p>
+    <p><strong>Description:</strong> {{ task.description }}</p>
+    <p><strong>Owner:</strong> {{ task.owner.username }}</p>
+    <p><strong>Created at:</strong> {{ task.created_at }}</p>
+    <p><strong>Updated at:</strong> {{ task.updated_at }}</p>
+
+    {% if task.owner == request.user %}
+        <p>
+            <a href="{% url 'tasks_web:task-update' task.pk %}">Edit task</a>
+        </p>
+
+        <p>
+            <a href="{% url 'tasks_web:task-delete' task.pk %}">Delete task</a>
+        </p>
+    {% endif %}
+
+    <p>
+        <a href="{% url 'tasks_web:task-list' %}">Back to task list</a>
+    </p>
+</body>
+</html>

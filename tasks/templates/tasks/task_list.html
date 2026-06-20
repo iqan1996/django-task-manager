@@ -7,11 +7,18 @@
 <body>
     <h1>Task List</h1>
 
+    <p>
+    <a href="{% url 'tasks_web:task-create' %}">Create new task</a>
+    </p>
+
     {% if tasks %}
         <ul>
             {% for task in tasks %}
                 <li>
-                    {{ task.title }} - {{ task.status }} - {{ task.owner.username }}
+                     <a href="{% url 'tasks_web:task-detail' task.pk %}">
+                        {{ task.title }}
+                    </a>
+                    - {{ task.status }} - {{ task.owner.username }}
                 </li>
             {% endfor %}
         </ul>
