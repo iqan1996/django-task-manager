@@ -44,7 +44,24 @@ def task_list_view(request):
     tasks = Task.objects.all().select_related("owner").order_by("-created_at")
     return render(request,'tasks/task_list.html', {"tasks" : tasks,})
 
-
+#for more safety ist better to write the code like this:
+#from django.db.models import F
+# @login_required
+# def task_list_view(request):
+#     tasks = (
+#         Task.objects
+#         .annotate(owner_username=F("owner__username"))
+#         .values(
+#             "id",
+#             "title",
+#             "description",
+#             "status",
+#             "created_at",
+#             "owner_username",
+#         )
+#         .order_by("-created_at")
+#     )
+#     return render(request, "tasks/task_list.html", {"tasks": tasks})
 
 @login_required
 def task_create_view(request):
