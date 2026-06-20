@@ -45,6 +45,7 @@ def task_list_view(request):
     return render(request,'tasks/task_list.html', {"tasks" : tasks,})
 
 #for more safety ist better to write the code like this:
+
 #from django.db.models import F
 # @login_required
 # def task_list_view(request):
@@ -55,7 +56,6 @@ def task_list_view(request):
 #             "id",
 #             "title",
 #             "description",
-#             "status",
 #             "created_at",
 #             "owner_username",
 #         )
