@@ -42,8 +42,18 @@ class TaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 @login_required
 def task_list_view(request):
+    query = request.GET.get("q","").strip()
     tasks = Task.objects.all().select_related("owner").order_by("-created_at")
-    return render(request,'tasks/task_list.html', {"tasks" : tasks,})
+
+    if query:
+        tasks = tasks.filter(
+            Q(title__icontains = query) |
+            Q(description__icontains=query)
+        )
+
+    return render(request,'tasks/task_list.html', {
+        "tasks" : tasks,
+        "query" : query})
 
 #for more safety ist better to write the code like this:
 

@@ -11,6 +11,11 @@
     <a href="{% url 'tasks_web:task-create' %}">Create new task</a>
     </p>
 
+    <form method="get">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search tasks">
+        <button type="submit">Search</button>
+    </form>
+
     {% if tasks %}
         <ul>
             {% for task in tasks %}
