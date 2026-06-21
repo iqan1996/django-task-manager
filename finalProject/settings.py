@@ -130,3 +130,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CSRF_TRUSTED_ORIGINS = ['https://nobody1996.pythonanywhere.com']
+
+
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/tasks/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"

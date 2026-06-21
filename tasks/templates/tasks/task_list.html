@@ -6,6 +6,16 @@
 </head>
 <body>
     <h1>Task List</h1>
+    <p>
+    Logged in as: {{ request.user.username }}
+    </p>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+
+
 
     <p>
     <a href="{% url 'tasks_web:task-create' %}">Create new task</a>
