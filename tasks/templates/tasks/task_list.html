@@ -1,44 +1,52 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Task List</title>
-</head>
-<body>
-    <h1>Task List</h1>
-    <p>
-    Logged in as: {{ request.user.username }}
-    </p>
+{% extends "base.html" %}
 
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
+{% block title %}Task List{% endblock %}
 
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Task List</h1>
 
+        <a href="{% url 'tasks_web:task-create' %}" class="btn btn-primary">
+            Create new task
+        </a>
+    </div>
 
-    <p>
-    <a href="{% url 'tasks_web:task-create' %}">Create new task</a>
-    </p>
-
-    <form method="get">
-        <input type="text" name="q" value="{{ query }}" placeholder="Search tasks">
-        <button type="submit">Search</button>
+    <form method="get" class="mb-4">
+        <div class="input-group">
+            <input
+                type="text"
+                name="q"
+                value="{{ query }}"
+                class="form-control"
+                placeholder="Search tasks by title or description"
+            >
+            <button type="submit" class="btn btn-outline-secondary">
+                Search
+            </button>
+        </div>
     </form>
 
     {% if tasks %}
-        <ul>
+        <div class="list-group">
             {% for task in tasks %}
-                <li>
-                     <a href="{% url 'tasks_web:task-detail' task.pk %}">
-                        {{ task.title }}
-                    </a>
-                    - {{ task.status }} - {{ task.owner.username }}
-                </li>
+                <a
+                    href="{% url 'tasks_web:task-detail' task.pk %}"
+                    class="list-group-item list-group-item-action"
+                >
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-1">{{ task.title }}</h5>
+                        <span class="badge bg-secondary">{{ task.status }}</span>
+                    </div>
+
+                    <small>
+                        Owner: {{ task.owner.username }}
+                    </small>
+                </a>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
-        <p>No tasks found.</p>
+        <div class="alert alert-info">
+            No tasks found.
+        </div>
     {% endif %}
-</body>
-</html>
+{% endblock %}

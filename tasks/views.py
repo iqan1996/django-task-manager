@@ -79,17 +79,22 @@ def task_create_view(request):
     if request.method == "POST":
         form = TaskForm(request.POST)
 
-
         if form.is_valid():
             task = form.save(commit=False)
             task.owner = request.user
             task.save()
             return redirect("tasks_web:task-list")
-        
     else:
         form = TaskForm()
 
-    return render(request, "tasks/task_form.html", {"form" : form})
+    return render(request, "tasks/task_form.html", {
+        "form": form,
+        "form_title": "Create Task",
+        "submit_label": "Create",
+    })
+
+
+
 
 
 @login_required
@@ -99,24 +104,33 @@ def task_detail_view(request, pk):
     return render(request, "tasks/task_detail.html", {"task":task,})
 
 
+
+
+
 @login_required
 def task_update_view(request, pk):
     task = get_object_or_404(Task, pk=pk)
 
     if task.owner != request.user:
         raise PermissionDenied
-    
+
     if request.method == "POST":
         form = TaskForm(request.POST, instance=task)
-    
+
         if form.is_valid():
             form.save()
             return redirect("tasks_web:task-detail", pk=task.pk)
-        
     else:
         form = TaskForm(instance=task)
-    
-    return render(request, "tasks/task_form.html", {"form":form})
+
+    return render(request, "tasks/task_form.html", {
+        "form": form,
+        "form_title": "Edit Task",
+        "submit_label": "Save changes",
+    })
+
+
+
 
 
 @login_required

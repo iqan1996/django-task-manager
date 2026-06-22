@@ -10,31 +10,35 @@
         rel="stylesheet"
     >
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg bg-white border-bottom mb-4">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'tasks_web:task-list' %}">
+            <a class="navbar-brand fw-semibold" href="{% url 'tasks_web:task-list' %}">
                 Task Manager
             </a>
 
-            <div class="ms-auto">
+            <div class="ms-auto d-flex align-items-center gap-3">
                 {% if request.user.is_authenticated %}
-                    <span class="me-3">
-                        Logged in as {{ request.user.username }}
+                    <span class="text-muted">
+                        Logged in as <strong>{{ request.user.username }}</strong>
                     </span>
 
-                    <form method="post" action="{% url 'logout' %}" class="d-inline">
+                    <form method="post" action="{% url 'logout' %}" class="m-0">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-secondary btn-sm">
                             Logout
                         </button>
                     </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">
+                        Login
+                    </a>
                 {% endif %}
             </div>
         </div>
     </nav>
 
-    <main class="container">
+    <main class="container pb-5">
         {% block content %}
         {% endblock %}
     </main>
