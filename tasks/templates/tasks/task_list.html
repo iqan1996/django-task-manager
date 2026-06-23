@@ -11,7 +11,7 @@
         </a>
     </div>
 
-    <form method="get" class="mb-4">
+    <form method="get" class="mb-2"  data-task-search-form>
         <div class="input-group">
             <input
                 type="text"
@@ -19,6 +19,7 @@
                 value="{{ query }}"
                 class="form-control"
                 placeholder="Search tasks by title or description"
+                data-task-search-input
             >
             <button type="submit" class="btn btn-outline-secondary">
                 Search
