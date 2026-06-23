@@ -1,71 +1,66 @@
-{% extends "base.html" %}
-
-{% block title %}Task Detail{% endblock %}
-
+{% extends "base.html" %} {% block title %}Task Detail{% endblock %} 
 {% block content %}
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div>
-                    <h1 class="h3 mb-2">{{ task.title }}</h1>
-                    <span class="badge bg-secondary">
-                        {{ task.status }}
-                    </span>
-                </div>
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div>
+        <h1 class="h3 mb-2">{{ task.title }}</h1>
+        <span class="badge bg-secondary"> {{ task.status }} </span>
+      </div>
 
-                {% if task.owner == request.user %}
-                    <div>
-                        <a
-                            href="{% url 'tasks_web:task-update' task.pk %}"
-                            class="btn btn-outline-primary btn-sm"
-                        >
-                            Edit
-                        </a>
-
-                        <a
-                            href="{% url 'tasks_web:task-delete' task.pk %}"
-                            class="btn btn-outline-danger btn-sm"
-                        >
-                            Delete
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-
-            <hr>
-
-            <div class="mb-3">
-                <h2 class="h5">Description</h2>
-
-                {% if task.description %}
-                    <p>{{ task.description }}</p>
-                {% else %}
-                    <p class="text-muted">No description provided.</p>
-                {% endif %}
-            </div>
-
-            <div class="row text-muted small">
-                <div class="col-md-4">
-                    <strong>Owner:</strong>
-                    {{ task.owner.username }}
-                </div>
-
-                <div class="col-md-4">
-                    <strong>Created:</strong>
-                    {{ task.created_at }}
-                </div>
-
-                <div class="col-md-4">
-                    <strong>Updated:</strong>
-                    {{ task.updated_at }}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="mt-3">
-        <a href="{% url 'tasks_web:task-list' %}" class="btn btn-secondary">
-            Back to task list
+      {% if task.owner == request.user %}
+      <div>
+        <a
+          href="{% url 'tasks_web:task-update' task.pk %}"
+          class="btn btn-outline-primary btn-sm"
+        >
+          Edit
         </a>
+
+        <a
+          href="{% url 'tasks_web:task-delete' task.pk %}"
+          class="btn btn-outline-danger btn-sm"
+        >
+          Delete
+        </a>
+      </div>
+      {% endif %}
     </div>
+
+    <hr />
+
+    <div class="mb-3">
+      <h2 class="h5">Description</h2>
+
+      {% if task.description %}
+      <p>{{ task.description }}</p>
+      {% else %}
+      <p class="text-muted">No description provided.</p>
+      {% endif %}
+    </div>
+
+    <div class="row text-muted small">
+      <div class="col-md-4">
+        <strong>Owner:</strong>
+        {{ task.owner.username }}
+      </div>
+
+      <div class="col-md-4">
+        <strong>Created:</strong>
+        {{ task.created_at }}
+      </div>
+
+      <div class="col-md-4">
+        <strong>Updated:</strong>
+        {{ task.updated_at }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-3">
+  <a href="{% url 'tasks_web:task-list' %}" class="btn btn-secondary">
+    Back to task list
+  </a>
+</div>
 {% endblock %}

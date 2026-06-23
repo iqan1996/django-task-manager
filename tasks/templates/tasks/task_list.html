@@ -27,6 +27,10 @@
         </div>
     </form>
 
+<div class="mb-3 text-muted small" data-search-status></div>
+
+
+<div data-task-results>
     {% if tasks %}
         <div class="list-group">
             {% for task in tasks %}
@@ -50,4 +54,6 @@
             No tasks found.
         </div>
     {% endif %}
+</div>
+
 {% endblock %}
