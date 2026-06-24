@@ -8,62 +8,79 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  searchForm.addEventListener("submit", async function (event) {
+  searchForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
     const query = searchInput.value.trim();
 
-    let apiUrl = "/api/tasks/";
+    loadTasks(query, resultsContainer, searchStatus);
+  });
+
+  const initialQuery = searchInput.value.trim();
+
+  loadTasks(initialQuery, resultsContainer, searchStatus);
+});
+
+async function loadTasks(query, resultsContainer, searchStatus) {
+  let apiUrl = "/api/tasks/";
+
+  if (query) {
+    apiUrl = `/api/tasks/?q=${encodeURIComponent(query)}`;
+  }
+
+  showLoading(resultsContainer);
+  setStatus(searchStatus, "Loading tasks from API...");
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("API request failed.");
+    }
+
+    const data = await response.json();
+    const tasks = Array.isArray(data) ? data : data.results || [];
+
+    renderTasks(tasks, resultsContainer);
 
     if (query) {
-      apiUrl = `/api/tasks/?search=${encodeURIComponent(query)}`;
+      setStatus(searchStatus, `Found ${tasks.length} task(s) for "${query}".`);
+    } else {
+      setStatus(searchStatus, `Showing all tasks. Total: ${tasks.length}.`);
     }
 
-    setStatus(searchStatus, "Searching...");
+    const pageUrl = query
+      ? `/tasks/?q=${encodeURIComponent(query)}`
+      : "/tasks/";
 
-    try {
-      const response = await fetch(apiUrl, {
-        method: "GET",
-        credentials: "same-origin",
-        headers: {
-          Accept: "application/json",
-        },
-      });
+    window.history.replaceState(null, "", pageUrl);
+  } catch (error) {
+    resultsContainer.innerHTML = `
+      <div class="alert alert-danger">
+        Could not load tasks from the API.
+      </div>
+    `;
 
-      if (!response.ok) {
-        throw new Error("API request failed.");
-      }
+    setStatus(searchStatus, "");
+  }
+}
 
-      const data = await response.json();
-      const tasks = Array.isArray(data) ? data : data.results || [];
-
-      renderTasks(tasks, resultsContainer);
-
-      if (query) {
-        setStatus(
-          searchStatus,
-          `Found ${tasks.length} task(s) for "${query}".`,
-        );
-      } else {
-        setStatus(searchStatus, `Showing all tasks. Total: ${tasks.length}.`);
-      }
-
-      const pageUrl = query
-        ? `/tasks/?q=${encodeURIComponent(query)}`
-        : "/tasks/";
-
-      window.history.replaceState(null, "", pageUrl);
-    } catch (error) {
-      resultsContainer.innerHTML = `
-        <div class="alert alert-danger">
-          Could not load tasks from the API.
-        </div>
-      `;
-
-      setStatus(searchStatus, "");
-    }
-  });
-});
+function showLoading(container) {
+  container.innerHTML = `
+    <div class="text-center py-4">
+      <div class="spinner-border" role="status" aria-hidden="true"></div>
+      <div class="mt-2 text-muted">
+        Loading tasks...
+      </div>
+    </div>
+  `;
+}
 
 function renderTasks(tasks, container) {
   container.innerHTML = "";

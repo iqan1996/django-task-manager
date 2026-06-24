@@ -15,9 +15,13 @@ class TaskListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        queryset = Task.objects.all().order_by('-created_at')
+        queryset = Task.objects.all().select_related('owner').order_by('-created_at')
 
-        search_query = self.request.query_params.get('search')
+        search_query = (
+        self.request.query_params.get("search")
+        or self.request.query_params.get("q")
+        or ""
+        ).strip()
 
         if search_query:
             queryset = queryset.filter(
@@ -42,7 +46,9 @@ class TaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 @login_required
 def task_list_view(request):
-    query = request.GET.get("q","").strip()
+    query = (request.GET.get("q")
+             or request.GET.get("search")
+             or "").strip()
     tasks = Task.objects.all().select_related("owner").order_by("-created_at")
 
     if query:
@@ -55,24 +61,6 @@ def task_list_view(request):
         "tasks" : tasks,
         "query" : query})
 
-#for more safety ist better to write the code like this:
-
-#from django.db.models import F
-# @login_required
-# def task_list_view(request):
-#     tasks = (
-#         Task.objects
-#         .annotate(owner_username=F("owner__username"))
-#         .values(
-#             "id",
-#             "title",
-#             "description",
-#             "created_at",
-#             "owner_username",
-#         )
-#         .order_by("-created_at")
-#     )
-#     return render(request, "tasks/task_list.html", {"tasks": tasks})
 
 @login_required
 def task_create_view(request):
