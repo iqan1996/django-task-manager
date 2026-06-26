@@ -235,6 +235,7 @@ Core requirements completed:
 * AJAX search enhancement
 * Ownership-based permissions
 * PythonAnywhere deployment
+* Basic automated permission tests
 
 
 This README was prepared with AI assistance and reviewed by the project author.

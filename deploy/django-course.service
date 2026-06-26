@@ -1,0 +1,23 @@
+[Unit]
+Description=Django Course Gunicorn service
+After=network.target
+
+[Service]
+User=iqan
+Group=www-data
+WorkingDirectory=/home/iqan/Django_Course
+Environment=DJANGO_DEBUG=False
+Environment=DJANGO_SECRET_KEY=change-me-before-start
+RuntimeDirectory=django-course
+RuntimeDirectoryMode=0755
+ExecStart=/home/iqan/Django_Course/venv/bin/gunicorn \
+          --workers 3 \
+          --bind unix:/run/django-course/gunicorn.sock \
+          --access-logfile - \
+          --error-logfile - \
+          finalProject.wsgi:application
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
