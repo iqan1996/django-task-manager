@@ -19,4 +19,5 @@ staticfiles/
 .idea/
 .DS_Store
 
+#iqanhoushmand.ir
 deploy/
